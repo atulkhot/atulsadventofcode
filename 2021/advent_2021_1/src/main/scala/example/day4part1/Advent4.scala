@@ -6,7 +6,11 @@ import cats.implicits._
 
 import scala.io.Source
 
-case class BoardState(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vector[Int])
+case class BoardState(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vector[Int]) {
+
+  def mark(elem: Int): BoardState =
+    copy(board = board - elem, rows = rows.updated(0, 1), cols = cols.updated(0, 1))
+}
 
 object BoardState {
   def apply(nRows: Int, nCols: Int, listOfElems: List[Int]): BoardState = {
@@ -26,7 +30,9 @@ object BoardState {
     new BoardState(board, rows, cols)
   }
 
-  def markElement(elem: Int, boardState: State[BoardState, BoardState]): State[BoardState, BoardState] = ???
+  def markElement(boardState: BoardState): State[Int, BoardState] = State { elem =>
+    elem -> boardState.mark(elem)
+  }
 }
 
 object Advent4 extends App {
