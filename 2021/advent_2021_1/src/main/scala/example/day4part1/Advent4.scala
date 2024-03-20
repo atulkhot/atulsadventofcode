@@ -8,8 +8,29 @@ import scala.io.Source
 
 case class BoardState(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vector[Int]) {
 
-  def mark(elem: Int): BoardState =
-    copy(board = board - elem, rows = rows.updated(0, 1), cols = cols.updated(0, 1))
+  def markACoordinate(coordinate: (Int, Int), rows: Vector[Int], cols: Vector[Int]): Option[(Int, Int)] = {
+    val (xCoord, yCoord) = coordinate
+    (
+      rows.get(xCoord),
+      cols.get(yCoord)
+    ).mapN { (x, y) =>
+      (x + 1, y + 1)
+    }
+  }
+
+  def mark(elem: Int): BoardState = {
+    val listOfCoords: Option[List[(Int, Int)]] = board.get(elem)
+    val p = Functor[Option].map(listOfCoords) { list =>
+      list.foldLeft(this) {
+        case (acc, (xCoord, yCoord)) =>
+          
+          val updatedCount = acc.markACoordinate((xCoord, yCoord), rows, cols) getOrElse()
+      }
+    }
+  }
+
+
+  //    copy(board = board - elem, rows = rows.updated(0, 1), cols = cols.updated(0, 1))
 }
 
 object BoardState {
