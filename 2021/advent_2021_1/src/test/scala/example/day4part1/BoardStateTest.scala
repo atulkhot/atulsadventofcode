@@ -37,13 +37,21 @@ class BoardStateTest extends AnyFlatSpec with should.Matchers {
     val boardState = BoardState(5, 5, list)
     val initialSize = boardState.board.size
 
-    val startingState: State[Int, BoardState] = BoardState.markElement(boardState)
+    val startingState: State[Int, BoardState] = boardState.markACoordinate
+
+    val allMarkedState = for {
+      initState <- startingState
+      finalState <- initState.markACoordinate
+    } yield finalState
 
     val resultState: BoardState = startingState.runA(14).value
 
-    resultState.board.size should be (initialSize-1)
     resultState.rows.get(0).value should be (1)
     resultState.cols.get(0).value should be (1)
+
+    val q = allMarkedState.runA(14).value
+
+    q.board.size should be (initialSize-1)
   }
 
   "Marking an element so a single row" should "is completely marked" in {
@@ -51,14 +59,12 @@ class BoardStateTest extends AnyFlatSpec with should.Matchers {
       "26", "20", "22", "11", "13", "6", "5", "2", "0", "12", "3", "4").map(_.toInt)
 
     val boardState = BoardState(5, 5, list)
-    val initialSize = boardState.board.size
 
-    val startingState: State[Int, BoardState] = BoardState.markElement(boardState)
+    val startingState: State[Int, BoardState] = boardState.markACoordinate
 
     val resultState: BoardState = startingState.runA(14).value
 
-    resultState.board.size should be (initialSize-1)
-    resultState.rows.get(0).value should be (5)
+    resultState.rows.get(0).value should be (1)
   }
 
 }

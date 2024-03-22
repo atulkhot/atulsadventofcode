@@ -1,6 +1,5 @@
 package example.day4part1
 
-import cats._
 import cats.data._
 import cats.implicits._
 
@@ -8,29 +7,24 @@ import scala.io.Source
 
 case class BoardState(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vector[Int]) {
 
-  def markACoordinate(coordinate: (Int, Int), rows: Vector[Int], cols: Vector[Int]): Option[(Int, Int)] = {
-    val (xCoord, yCoord) = coordinate
-    (
-      rows.get(xCoord),
-      cols.get(yCoord)
-    ).mapN { (x, y) =>
-      (x + 1, y + 1)
+  def markACoordinate: State[Int, BoardState] = State { key =>
+    board(key) match {
+      case Nil =>
+        (key, copy(board - key))
+
+      case (x, y) :: xs =>
+        val q = for {
+          xV <- rows.get(x)
+          yV <- cols.get(y)
+        } yield (key, copy(board.updated(key, xs), rows.updated(x, xV+1), cols.updated(y, yV+1)))
+
+        val p = q.map(x => x._2.board.get(14))
+        println(p)
+
+        q.getOrElse(key, this)
     }
   }
 
-  def mark(elem: Int): BoardState = {
-    val listOfCoords: Option[List[(Int, Int)]] = board.get(elem)
-    val p = Functor[Option].map(listOfCoords) { list =>
-      list.foldLeft(this) {
-        case (acc, (xCoord, yCoord)) =>
-          
-          val updatedCount = acc.markACoordinate((xCoord, yCoord), rows, cols) getOrElse()
-      }
-    }
-  }
-
-
-  //    copy(board = board - elem, rows = rows.updated(0, 1), cols = cols.updated(0, 1))
 }
 
 object BoardState {
@@ -51,9 +45,7 @@ object BoardState {
     new BoardState(board, rows, cols)
   }
 
-  def markElement(boardState: BoardState): State[Int, BoardState] = State { elem =>
-    elem -> boardState.mark(elem)
-  }
+  def markElement(boardState: BoardState): State[Int, BoardState] = ???
 }
 
 object Advent4 extends App {
@@ -83,5 +75,4 @@ object Advent4 extends App {
   }
 
   p.foreach(println)
-
 }
