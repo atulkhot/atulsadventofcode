@@ -6,6 +6,7 @@ import cats._
 import cats.data.State
 import cats.data._
 import cats.implicits._
+import example.day4part1.Board.BoardState
 import org.scalatest.OptionValues.convertOptionToValuable
 
 class BoardSpec extends AnyFlatSpec with should.Matchers {
@@ -37,21 +38,13 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     val boardState = Board(5, 5, list)
     val initialSize = boardState.board.size
 
-    val startingState: State[Int, Board] = boardState.markACoordinate
+    val startingState: BoardState[Unit] = Board.markACoordinate(14) // boardState.markACoordinate
 
-    val allMarkedState = for {
-      initState <- startingState
-      finalState <- initState.markACoordinate
-    } yield finalState
-
-    val resultState: Board = startingState.runA(14).value
+    val resultState: Board = startingState.runS(boardState).value
 
     resultState.rows.get(0).value should be (1)
     resultState.cols.get(0).value should be (1)
-
-    val q = allMarkedState.runA(14).value
-
-    q.board.size should be (initialSize-1)
+    resultState.board.size should be (initialSize - 1)
   }
 
   "Marking an element so a single row" should "is completely marked" in {
