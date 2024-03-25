@@ -35,12 +35,12 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     val list = List("14", "21", "13", "24", "4", "13", "16", "15", "9", "19", "18", "8", "23",
       "26", "20", "22", "11", "13", "6", "5", "2", "0", "12", "3", "4").map(_.toInt)
 
-    val boardState = Board(5, 5, list)
-    val initialSize = boardState.board.size
+    val board = Board(5, 5, list)
+    val initialSize = board.board.size
 
-    val startingState: BoardState[Unit] = Board.markACoordinate(14) // boardState.markACoordinate
+    val startingState: BoardState[Unit] = Board.markACoordinate(14) // board.markACoordinate
 
-    val resultState: Board = startingState.runS(boardState).value
+    val resultState: Board = startingState.runS(board).value
 
     resultState.rows.get(0).value should be (1)
     resultState.cols.get(0).value should be (1)
