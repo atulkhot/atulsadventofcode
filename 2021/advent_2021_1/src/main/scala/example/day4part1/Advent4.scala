@@ -5,9 +5,9 @@ import cats.implicits._
 
 import scala.io.Source
 
-case class BoardState(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vector[Int]) {
+case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vector[Int]) {
 
-  def markACoordinate: State[Int, BoardState] = State { key =>
+  def markACoordinate: State[Int, Board] = State { key =>
     board(key) match {
       case Nil =>
         (key, copy(board - key))
@@ -27,8 +27,9 @@ case class BoardState(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols
 
 }
 
-object BoardState {
-  def apply(nRows: Int, nCols: Int, listOfElems: List[Int]): BoardState = {
+object Board {
+
+  def apply(nRows: Int, nCols: Int, listOfElems: List[Int]): Board = {
     val listOfCoords = for {
       row <- (0 until nRows).toList
       col <- (0 until nCols).toList
@@ -42,10 +43,10 @@ object BoardState {
     val rows = Vector.fill(nRows)(0)
     val cols = Vector.fill(nCols)(0)
 
-    new BoardState(board, rows, cols)
+    new Board(board, rows, cols)
   }
 
-  def markElement(boardState: BoardState): State[Int, BoardState] = ???
+  def markElement(boardState: Board): State[Int, Board] = ???
 }
 
 object Advent4 extends App {

@@ -8,12 +8,12 @@ import cats.data._
 import cats.implicits._
 import org.scalatest.OptionValues.convertOptionToValuable
 
-class BoardStateTest extends AnyFlatSpec with should.Matchers {
+class BoardSpec extends AnyFlatSpec with should.Matchers {
   "A board representation" should "return proper coordinates" in {
     val list = List("14", "21", "17", "24", "4", "10", "16", "15", "9", "19", "18", "8", "23",
       "26", "20", "22", "11", "13", "6", "5", "2", "0", "12", "3", "7").map(_.toInt)
 
-    val board = BoardState(5, 5, list)
+    val board = Board(5, 5, list)
 
     board.board(14) should be (List(0 -> 0))
     board.board(11) should be (List(3 -> 1))
@@ -24,7 +24,7 @@ class BoardStateTest extends AnyFlatSpec with should.Matchers {
     val list = List("14", "21", "13", "24", "4", "13", "16", "15", "9", "19", "18", "8", "23",
       "26", "20", "22", "11", "13", "6", "5", "2", "0", "12", "3", "4").map(_.toInt)
 
-    val board = BoardState(5, 5, list)
+    val board = Board(5, 5, list)
 
     board.board(4) should be (List(0 -> 4, 4 -> 4))
     board.board(13) should be (List(0 -> 2, 1 -> 0, 3 -> 2))
@@ -34,17 +34,17 @@ class BoardStateTest extends AnyFlatSpec with should.Matchers {
     val list = List("14", "21", "13", "24", "4", "13", "16", "15", "9", "19", "18", "8", "23",
       "26", "20", "22", "11", "13", "6", "5", "2", "0", "12", "3", "4").map(_.toInt)
 
-    val boardState = BoardState(5, 5, list)
+    val boardState = Board(5, 5, list)
     val initialSize = boardState.board.size
 
-    val startingState: State[Int, BoardState] = boardState.markACoordinate
+    val startingState: State[Int, Board] = boardState.markACoordinate
 
     val allMarkedState = for {
       initState <- startingState
       finalState <- initState.markACoordinate
     } yield finalState
 
-    val resultState: BoardState = startingState.runA(14).value
+    val resultState: Board = startingState.runA(14).value
 
     resultState.rows.get(0).value should be (1)
     resultState.cols.get(0).value should be (1)
@@ -58,11 +58,11 @@ class BoardStateTest extends AnyFlatSpec with should.Matchers {
     val list = List("14", "14", "14", "14", "14", "13", "16", "15", "9", "19", "18", "8", "23",
       "26", "20", "22", "11", "13", "6", "5", "2", "0", "12", "3", "4").map(_.toInt)
 
-    val boardState = BoardState(5, 5, list)
+    val boardState = Board(5, 5, list)
 
-    val startingState: State[Int, BoardState] = boardState.markACoordinate
+    val startingState: State[Int, Board] = boardState.markACoordinate
 
-    val resultState: BoardState = startingState.runA(14).value
+    val resultState: Board = startingState.runA(14).value
 
     resultState.rows.get(0).value should be (1)
   }
