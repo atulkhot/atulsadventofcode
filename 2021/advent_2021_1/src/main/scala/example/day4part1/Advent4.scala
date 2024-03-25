@@ -19,15 +19,17 @@ case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vec
         } yield (key, copy(board.updated(key, xs), rows.updated(x, xV+1), cols.updated(y, yV+1)))
 
         val p = q.map(x => x._2.board.get(14))
-        println(p)
-
         q.getOrElse(key, this)
     }
   }
 
+  def modify(list: List[(Int, Int)]): Board = ???
+
 }
 
 object Board {
+
+  type BoardState[A] = State[Board, A]
 
   def apply(nRows: Int, nCols: Int, listOfElems: List[Int]): Board = {
     val listOfCoords = for {
@@ -46,7 +48,13 @@ object Board {
     new Board(board, rows, cols)
   }
 
-  def markElement(boardState: Board): State[Int, Board] = ???
+  def markACoordinate(key: Int): BoardState[Unit] = State.modify { s =>
+    val board = s.board
+    board.get(key) match {
+      case None => s
+      case Some(x) => s.modify(x)
+    }
+  }
 }
 
 object Advent4 extends App {
