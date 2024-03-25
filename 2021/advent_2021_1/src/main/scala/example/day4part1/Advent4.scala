@@ -18,12 +18,24 @@ case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vec
           yV <- cols.get(y)
         } yield (key, copy(board.updated(key, xs), rows.updated(x, xV+1), cols.updated(y, yV+1)))
 
-        val p = q.map(x => x._2.board.get(14))
         q.getOrElse(key, this)
     }
   }
 
-  def modify(list: List[(Int, Int)]): Board = ???
+  def reduceList(key: Int, list: List[(Int, Int)]): Board = {
+    val (updatedRow, updatedCol) = list.foldLeft((rows, cols)) {
+      case (acc@(r, c), (x, y)) =>
+        (r.get(x), c.get(y)).mapN { (a, b) =>
+          r.updated(x, a+1) -> c.updated(y, b+1)
+        }.getOrElse(acc)
+    }
+    copy(board - key, updatedRow, updatedCol)
+  }
+
+  def modify(key: Int): Board = board.get(key) match {
+    case None => this
+    case Some(list) => reduceList(key, list)
+  }
 
 }
 
@@ -52,7 +64,7 @@ object Board {
     val board = s.board
     board.get(key) match {
       case None => s
-      case Some(x) => s.modify(x)
+      case Some(x) => s.modify(key)
     }
   }
 }
