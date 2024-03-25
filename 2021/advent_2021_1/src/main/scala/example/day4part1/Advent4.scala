@@ -33,7 +33,7 @@ case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vec
   }
 
   def modify(key: Int): Board = board.get(key) match {
-    case None => this
+    case None => this // should never happen
     case Some(list) => reduceList(key, list)
   }
 
@@ -60,13 +60,7 @@ object Board {
     new Board(board, rows, cols)
   }
 
-  def markACoordinate(key: Int): BoardState[Unit] = State.modify { s =>
-    val board = s.board
-    board.get(key) match {
-      case None => s
-      case Some(x) => s.modify(key)
-    }
-  }
+  def markACoordinate(key: Int): BoardState[Unit] = State.modify(s => s.modify(key))
 }
 
 object Advent4 extends App {
