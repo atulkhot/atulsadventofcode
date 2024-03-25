@@ -67,4 +67,29 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultState.board.size should be (initialSize - 1)
   }
 
+  "Marking an element so a single column" should "is completely marked" in {
+    val list = List(
+      "14", "21", "13", "24", "4",
+      "14", "16", "15", "9", "19",
+      "14", "8", "23", "26", "20",
+      "14", "11", "13", "6", "5",
+      "14", "0", "12", "3",  "4").map(_.toInt)
+
+    val boardState = Board(5, 5, list)
+    val initialSize = boardState.board.size
+
+    val startingState: BoardState[Unit] = Board.markACoordinate(14)
+
+    val resultState: Board = startingState.runS(boardState).value
+
+    resultState.cols.get(0).value should be (5)
+    resultState.rows.get(0).value should be (1)
+    resultState.rows.get(1).value should be (1)
+    resultState.rows.get(2).value should be (1)
+    resultState.rows.get(3).value should be (1)
+    resultState.rows.get(4).value should be (1)
+    resultState.board.size should be (initialSize - 1)
+  }
+
+
 }
