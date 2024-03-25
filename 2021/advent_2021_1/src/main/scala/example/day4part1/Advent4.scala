@@ -7,21 +7,6 @@ import scala.io.Source
 
 case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vector[Int]) {
 
-  def markACoordinate: State[Int, Board] = State { key =>
-    board(key) match {
-      case Nil =>
-        (key, copy(board - key))
-
-      case (x, y) :: xs =>
-        val q = for {
-          xV <- rows.get(x)
-          yV <- cols.get(y)
-        } yield (key, copy(board.updated(key, xs), rows.updated(x, xV+1), cols.updated(y, yV+1)))
-
-        q.getOrElse(key, this)
-    }
-  }
-
   def reduceList(key: Int, list: List[(Int, Int)]): Board = {
     val (updatedRow, updatedCol) = list.foldLeft((rows, cols)) {
       case (acc@(r, c), (x, y)) =>
