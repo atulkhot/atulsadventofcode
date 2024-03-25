@@ -17,10 +17,7 @@ case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vec
     copy(board - key, updatedRow, updatedCol)
   }
 
-  def modify(key: Int): Board = board.get(key) match {
-    case None => this // should never happen
-    case Some(list) => reduceList(key, list)
-  }
+  def modify(key: Int): Board = board.get(key).fold(this)(list => reduceList(key, list))
 
 }
 
