@@ -11,8 +11,11 @@ import org.scalatest.OptionValues.convertOptionToValuable
 
 class BoardSpec extends AnyFlatSpec with should.Matchers {
   "A board representation" should "return proper coordinates" in {
-    val list = List("14", "21", "17", "24", "4", "10", "16", "15", "9", "19", "18", "8", "23",
-      "26", "20", "22", "11", "13", "6", "5", "2", "0", "12", "3", "7").map(_.toInt)
+    val list = List("14", "21", "17", "24", "4",
+                    "10", "16", "15", "9", "19",
+                    "18", "8", "23", "26", "20",
+                    "22", "11", "13", "6", "5",
+                    "2", "0", "12", "3", "7").map(_.toInt)
 
     val board = Board(5, 5, list)
 
@@ -22,8 +25,11 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
   }
 
   "A board representation with duplicate numbers" should "return proper coordinates" in {
-    val list = List("14", "21", "13", "24", "4", "13", "16", "15", "9", "19", "18", "8", "23",
-      "26", "20", "22", "11", "13", "6", "5", "2", "0", "12", "3", "4").map(_.toInt)
+    val list = List("14", "21", "13", "24", "4",
+                    "13", "16", "15", "9", "19",
+                    "18", "8", "23", "26", "20",
+                    "22", "11", "13", "6", "5",
+                    "2", "0", "12", "3", "4").map(_.toInt)
 
     val board = Board(5, 5, list)
 
@@ -32,8 +38,11 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
   }
 
   "Marking an element" should "update the coordinates vectors" in {
-    val list = List("14", "21", "13", "24", "4", "13", "16", "15", "9", "19", "18", "8", "23",
-      "26", "20", "22", "11", "13", "6", "5", "2", "0", "12", "3", "4").map(_.toInt)
+    val list = List("14", "21", "13", "24", "4",
+                    "13", "16", "15", "9", "19",
+                    "18", "8", "23", "26", "20",
+                    "22", "11", "13", "6", "5",
+                    "2", "0", "12", "3", "4").map(_.toInt)
 
     val board = Board(5, 5, list)
     val initialSize = board.board.size
@@ -45,11 +54,16 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultState.rows.get(0).value should be (1)
     resultState.cols.get(0).value should be (1)
     resultState.board.size should be (initialSize - 1)
+
+    resultState.entireRowOrColMarked should be (false)
   }
 
   "Marking an element so a single row" should "is completely marked" in {
-    val list = List("14", "14", "14", "14", "14", "13", "16", "15", "9", "19", "18", "8", "23",
-      "26", "20", "22", "11", "13", "6", "5", "2", "0", "12", "3", "4").map(_.toInt)
+    val list = List("14", "14", "14", "14", "14",
+                    "13", "16", "15", "9", "19",
+                    "18", "8", "23", "26", "20",
+                    "22", "11", "13", "6", "5",
+                    "2", "0", "12", "3", "4").map(_.toInt)
 
     val boardState = Board(5, 5, list)
     val initialSize = boardState.board.size
@@ -65,6 +79,8 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultState.cols.get(3).value should be (1)
     resultState.cols.get(4).value should be (1)
     resultState.board.size should be (initialSize - 1)
+
+    resultState.entireRowOrColMarked should be (true)
   }
 
   "Marking an element so a single column" should "is completely marked" in {
@@ -89,6 +105,8 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultState.rows.get(3).value should be (1)
     resultState.rows.get(4).value should be (1)
     resultState.board.size should be (initialSize - 1)
+
+    resultState.entireRowOrColMarked should be (true)
   }
 
 

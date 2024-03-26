@@ -5,7 +5,7 @@ import cats.implicits._
 
 import scala.io.Source
 
-case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vector[Int]) {
+case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vector[Int], entireRowOrColMarked: Boolean) {
 
   def reduceList(key: Int, list: List[(Int, Int)]): Board = {
     val (updatedRow, updatedCol) = list.foldLeft((rows, cols)) {
@@ -14,18 +14,19 @@ case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vec
           r.updated(x, a + 1) -> c.updated(y, b + 1)
         }.getOrElse(acc)
     }
-    copy(board - key, updatedRow, updatedCol)
+    val allMarkedCount = rows.size
+    val allOfARowOrColMarked = updatedRow.contains(allMarkedCount) || updatedCol.contains(allMarkedCount)
+    copy(board - key, updatedRow, updatedCol, allOfARowOrColMarked)
   }
 
   def modify(key: Int): Board = board.get(key).fold(this)(list => reduceList(key, list))
-
 }
 
 object Board {
 
   type BoardState[A] = State[Board, A]
 
-  def createCoordMapping(nRows: Int, nCols: Int, listOfElems: List[Int]) = {
+  private def createCoordMapping(nRows: Int, nCols: Int, listOfElems: List[Int]) = {
     val listOfCoords = for {
       row <- List.range(0, nRows)
       col <- List.range(0, nCols)
@@ -39,7 +40,7 @@ object Board {
     val rows = Vector.fill(nRows)(0)
     val cols = Vector.fill(nCols)(0)
 
-    new Board(board, rows, cols)
+    new Board(board, rows, cols, false)
   }
 
   def markACoordinate(key: Int): BoardState[Unit] = State.modify(s => s.modify(key))
