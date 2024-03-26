@@ -11,7 +11,7 @@ case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vec
     val (updatedRow, updatedCol) = list.foldLeft((rows, cols)) {
       case (acc@(r, c), (x, y)) =>
         (r.get(x), c.get(y)).mapN { (a, b) =>
-          r.updated(x, a+1) -> c.updated(y, b+1)
+          r.updated(x, a + 1) -> c.updated(y, b + 1)
         }.getOrElse(acc)
     }
     copy(board - key, updatedRow, updatedCol)
@@ -25,17 +25,17 @@ object Board {
 
   type BoardState[A] = State[Board, A]
 
-  def apply(nRows: Int, nCols: Int, listOfElems: List[Int]): Board = {
+  def createCoordMapping(nRows: Int, nCols: Int, listOfElems: List[Int]) = {
     val listOfCoords = for {
-      row <- (0 until nRows).toList
-      col <- (0 until nCols).toList
+      row <- List.range(0, nRows)
+      col <- List.range(0, nCols)
     } yield List(row -> col)
 
-    val listOfMaps = listOfElems.zip(listOfCoords).map { x =>
-      Map(x._1 -> x._2)
-    }
+    listOfElems.zip(listOfCoords).foldMap(x => Map(x._1 -> x._2))
+  }
 
-    val board = listOfMaps.combineAll
+  def apply(nRows: Int, nCols: Int, listOfElems: List[Int]): Board = {
+    val board = createCoordMapping(nRows, nCols, listOfElems)
     val rows = Vector.fill(nRows)(0)
     val cols = Vector.fill(nCols)(0)
 

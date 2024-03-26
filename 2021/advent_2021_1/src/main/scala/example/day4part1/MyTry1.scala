@@ -6,7 +6,7 @@ import cats.implicits._
 object MyTry1 {
 
   def main(args: Array[String]): Unit = {
-    val p = Vector.fill(5)(0)
+    val p = List.range(0,  10)
     println(p)
   }
 }
