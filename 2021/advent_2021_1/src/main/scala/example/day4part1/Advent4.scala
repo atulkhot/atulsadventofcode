@@ -10,7 +10,7 @@ case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vec
   def reduceList(key: Int, list: List[(Int, Int)]): Board = {
     val (updatedRow, updatedCol) = list.foldLeft((rows, cols)) {
       case (acc@(r, c), (x, y)) =>
-        (r.get(x), c.get(y)).mapN { (a, b) =>
+        (r.get(x), c.get(y)).tupled.map { case (a, b) =>
           r.updated(x, a + 1) -> c.updated(y, b + 1)
         }.getOrElse(acc)
     }
@@ -20,6 +20,8 @@ case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vec
   }
 
   def modify(key: Int): Board = board.get(key).fold(this)(list => reduceList(key, list))
+
+  def winningScore: Int = 3528
 }
 
 object Board {
@@ -43,7 +45,7 @@ object Board {
     new Board(board, rows, cols, false)
   }
 
-  def markACoordinate(key: Int): BoardState[Unit] = State.modify(s => s.modify(key))
+  def markBoardElement(key: Int): BoardState[Unit] = State.modify(s => s.modify(key))
 }
 
 object Advent4 extends App {
@@ -51,7 +53,7 @@ object Advent4 extends App {
     val tmpList = list.zipWithIndex
 
     val resultList = for {
-      i <- (0 to 4).toList
+      i <- List.range(0, 5) // (0 to 4).toList
       (elem, idx) <- tmpList
       if i == idx % 5
     } yield elem
