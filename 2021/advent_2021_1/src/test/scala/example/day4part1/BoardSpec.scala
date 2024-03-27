@@ -11,13 +11,13 @@ import org.scalatest.OptionValues.convertOptionToValuable
 
 class BoardSpec extends AnyFlatSpec with should.Matchers {
   "A board representation" should "return proper coordinates" in {
-    val list = List("14", "21", "17", "24", "4",
+    val boardData = List("14", "21", "17", "24", "4",
                     "10", "16", "15", "9", "19",
                     "18", "8", "23", "26", "20",
                     "22", "11", "13", "6", "5",
                     "2", "0", "12", "3", "7").map(_.toInt)
 
-    val board = Board(5, 5, list)
+    val board = Board(5, 5, boardData)
 
     board.board(14) should be (List(0 -> 0))
     board.board(11) should be (List(3 -> 1))
@@ -38,13 +38,13 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
   }
 
   "Marking an element" should "update the coordinates vectors" in {
-    val list = List("14", "21", "13", "24", "4",
+    val boardData = List("14", "21", "13", "24", "4",
                     "13", "16", "15", "9", "19",
                     "18", "8", "23", "26", "20",
                     "22", "11", "13", "6", "5",
                     "2", "0", "12", "3", "4").map(_.toInt)
 
-    val board = Board(5, 5, list)
+    val board = Board(5, 5, boardData)
     val initialSize = board.board.size
 
     val startingState: BoardState[Unit] = Board.markBoardElement(14) // board.markACoordinate
@@ -59,18 +59,18 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
   }
 
   "Marking an element so a single row" should "is completely marked" in {
-    val list = List("14", "14", "14", "14", "14",
+    val boardData = List("14", "14", "14", "14", "14",
                     "13", "16", "15", "9", "19",
                     "18", "8", "23", "26", "20",
                     "22", "11", "13", "6", "5",
                     "2", "0", "12", "3", "4").map(_.toInt)
 
-    val boardState = Board(5, 5, list)
-    val initialSize = boardState.board.size
+    val board = Board(5, 5, boardData)
+    val initialSize = board.board.size
 
     val startingState: BoardState[Unit] = Board.markBoardElement(14)
 
-    val resultState: Board = startingState.runS(boardState).value
+    val resultState: Board = startingState.runS(board).value
 
     resultState.rows.get(0).value should be (5)
     resultState.cols.get(0).value should be (1)
@@ -84,19 +84,19 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
   }
 
   "Marking an element so a single column" should "is completely marked" in {
-    val list = List(
+    val boardData = List(
       "14", "21", "13", "24", "4",
       "14", "16", "15", "9", "19",
       "14", "8", "23", "26", "20",
       "14", "11", "13", "6", "5",
       "14", "0", "12", "3",  "4").map(_.toInt)
 
-    val boardState = Board(5, 5, list)
-    val initialSize = boardState.board.size
+    val board = Board(5, 5, boardData)
+    val initialSize = board.board.size
 
     val startingState: BoardState[Unit] = Board.markBoardElement(14)
 
-    val resultState: Board = startingState.runS(boardState).value
+    val resultState: Board = startingState.runS(board).value
 
     resultState.cols.get(0).value should be (5)
     resultState.rows.get(0).value should be (1)
@@ -111,14 +111,14 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
   }
 
   "Marking a series of elements so a single row" should "is completely marked" in {
-    val list = List(
+    val boardData = List(
       "14", "21", "17", "24", "4",
       "10", "16", "15", "9", "19",
       "18", "8", "23", "26", "20",
       "22", "11", "13", "6", "5",
       "2", "0", "12", "3",  "7").map(_.toInt)
 
-    val boardState = Board(5, 5, list)
+    val board = Board(5, 5, boardData)
 
     val finalState: BoardState[Unit] = for {
       _ <- Board.markBoardElement(7)
@@ -135,7 +135,7 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
       rowMarkedState <- Board.markBoardElement(24)
     } yield rowMarkedState
 
-    val resultState = finalState.runS(boardState).value
+    val resultState = finalState.runS(board).value
 
     resultState.rows.get(0).value should be (5)
     resultState.rows.get(1).value should be (1)
@@ -155,5 +155,9 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultState.winningScore(24) should be (4512)
   }
 
+//  "Drawing elements for a set of boards" should "calculate the right score for the winning board" in {
+//
+//
+//  }
 
 }
