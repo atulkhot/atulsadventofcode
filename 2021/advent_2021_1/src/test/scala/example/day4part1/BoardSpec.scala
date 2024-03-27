@@ -107,7 +107,7 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultState.board.size should be (initialSize - 1)
 
     resultState.entireRowOrColMarked should be (true)
-    resultState.winningScore should be (3528)
+    resultState.winningScore(14) should be (3290)
   }
 
   "Marking a series of elements so a single row" should "is completely marked" in {
@@ -119,7 +119,6 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
       "2", "0", "12", "3",  "7").map(_.toInt)
 
     val boardState = Board(5, 5, list)
-    val initialSize = boardState.board.size
 
     val finalState: BoardState[Unit] = for {
       _ <- Board.markBoardElement(7)
@@ -153,7 +152,7 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultState.board.size should be (13)
 
     resultState.entireRowOrColMarked should be (true)
-    resultState.winningScore should be (4512)
+    resultState.winningScore(24) should be (4512)
   }
 
 

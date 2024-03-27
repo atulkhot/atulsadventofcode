@@ -21,7 +21,7 @@ case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vec
 
   def modify(key: Int): Board = board.get(key).fold(this)(list => reduceList(key, list))
 
-  def winningScore: Int = 3528
+  def winningScore(winningElem: Int): Int = board.keys.sum * winningElem
 }
 
 object Board {
