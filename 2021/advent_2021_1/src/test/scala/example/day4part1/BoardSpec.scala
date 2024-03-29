@@ -114,7 +114,8 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultState.board.size should be(initialSize - 1)
 
     resultState.entireRowOrColMarked should be(true)
-    resultState.winningScore(14) should be(3290)
+    resultState.winningElem should be (14)
+    resultState.winningScore should be(3290)
   }
 
   "Marking a series of elements so a single row" should "is completely marked" in {
@@ -160,7 +161,7 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultState.board.size should be(13)
 
     resultState.entireRowOrColMarked should be(true)
-    resultState.winningScore(24) should be(4512)
+    resultState.winningScore should be(4512)
   }
 
   "Drawing elements for a set of boards" should "calculate the right score for the winning board" in {
@@ -236,6 +237,6 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultBoard.size should be (1)
     val winningBoard = resultBoard.get(0)
 
-    winningBoard.value.winningScore(4512)
+    winningBoard.value.winningScore should be (4512)
   }
 }
