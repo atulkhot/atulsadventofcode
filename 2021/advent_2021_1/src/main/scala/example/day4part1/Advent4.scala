@@ -3,6 +3,7 @@ package example.day4part1
 import cats.data._
 import cats.implicits._
 
+import scala.collection.immutable.List
 import scala.io.Source
 
 case class Board(board: Map[Int, List[(Int, Int)]], rows: Vector[Int], cols: Vector[Int], entireRowOrColMarked: Boolean) {
@@ -46,21 +47,16 @@ object Board {
   }
 
   def markBoardElement(key: Int): BoardState[Unit] = State.modify(s => s.modify(key))
+
+  def doTheMarking(board: Board, elem: Int) =
+    markBoardElement(elem).runS(board).value
+
+  def makeAnElementOfAllBoards(boards: List[Board], elem: Int): List[Board] =
+    boards.traverse(board => List(doTheMarking(board, elem))).flatten
+
 }
 
 object Advent4 extends App {
-  def transpose(list: List[Int]) = {
-    val tmpList = list.zipWithIndex
-
-    val resultList = for {
-      i <- List.range(0, 5) // (0 to 4).toList
-      (elem, idx) <- tmpList
-      if i == idx % 5
-    } yield elem
-
-    resultList
-  }
-
   private val dataFile = "./src/main/resources/example/day4part1/sample.txt"
   val depthsList =
     Source.fromFile(dataFile)
