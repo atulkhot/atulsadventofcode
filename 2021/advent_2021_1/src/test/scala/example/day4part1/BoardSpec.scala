@@ -178,8 +178,6 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
       )
     ).map(boardData => Board(5, 5, boardData))
 
-    val drawnNumbers = List(7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24, 10, 16, 13, 6, 15, 25, 12, 22, 18, 20, 8, 19, 3, 26, 1)
-
     val result = Board.makeAnElementOfAllBoards(inputBoards, 7)
 
     result.size should be(3)
@@ -194,7 +192,40 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
 
     updatedBoard2.rows(4) should be(1)
     updatedBoard2.cols(4) should be(1)
-
   }
 
+  "Drawing a series of elements for a set of boards" should "returns one winning board" in {
+    val inputBoards = List(
+      List(
+        22, 13, 17, 11, 0,
+        8, 2, 23, 4, 24,
+        21, 9, 14, 16, 7,
+        6, 10, 3, 18, 5,
+        1, 12, 20, 15, 19
+      ),
+      List(
+        3, 15, 0, 2, 22,
+        9, 18, 13, 17, 5,
+        19, 8, 7, 25, 23,
+        20, 11, 10, 24, 4,
+        14, 21, 16, 12, 6
+      ),
+      List(
+        14, 21, 17, 24, 4,
+        10, 16, 15, 9, 19,
+        18, 8, 23, 26, 20,
+        22, 11, 13, 6, 5,
+        2, 0, 12, 3, 7
+      )
+    ).map(boardData => Board(5, 5, boardData))
+
+    val drawnNumbers = List(7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24, 10, 16, 13, 6, 15, 25, 12, 22, 18, 20, 8, 19, 3, 26, 1)
+
+    val resultBoard = Board.drawASeriesOfNumbers(inputBoards, drawnNumbers)
+
+    resultBoard.size should be (1)
+    val winningBoard = resultBoard.get(0)
+
+    winningBoard.value.winningScore(4512)
+  }
 }

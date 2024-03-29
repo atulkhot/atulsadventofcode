@@ -1,5 +1,7 @@
 package example.day4part1
 
+import cats.Alternative
+import cats.Id
 import cats.data._
 import cats.implicits._
 
@@ -38,6 +40,8 @@ object Board {
     listOfElems.zip(listOfCoords).foldMap(x => Map(x._1 -> x._2))
   }
 
+  def empty = new Board(Map.empty, Vector.empty[Int], Vector.empty[Int], false)
+
   def apply(nRows: Int, nCols: Int, listOfElems: List[Int]): Board = {
     val board = createCoordMapping(nRows, nCols, listOfElems)
     val rows = Vector.fill(nRows)(0)
@@ -48,18 +52,26 @@ object Board {
 
   def markBoardElement(key: Int): BoardState[Unit] = State.modify(s => s.modify(key))
 
-  def doTheMarking(board: Board, elem: Int) =
+  private def doTheMarking(board: Board, elem: Int) =
     markBoardElement(elem).runS(board).value
 
   def makeAnElementOfAllBoards(boards: List[Board], elem: Int): List[Board] =
     boards.traverse(board => List(doTheMarking(board, elem))).flatten
 
+  private def markElemAndCheckAllBoards(boards: List[Board], elem: Int): List[Board] = {
+    val p = makeAnElementOfAllBoards(boards, elem)
+    p.find(_.entireRowOrColMarked).fold(p)(board => List(board))
+  }
+
+  def drawASeriesOfNumbers(boards: List[Board], elementsDrawn: List[Int]): List[Board] =
+    elementsDrawn.foldLeft(boards)((acc, elem) => markElemAndCheckAllBoards(acc, elem))
 }
 
 object Advent4 extends App {
   private val dataFile = "./src/main/resources/example/day4part1/sample.txt"
+  private val source = Source.fromFile(dataFile)
   val depthsList =
-    Source.fromFile(dataFile)
+    source
       .getLines()
       .toList
 
@@ -70,5 +82,5 @@ object Advent4 extends App {
     }
   }
 
-  p.foreach(println)
+  val q = p.map(r => r.map(_.toInt))
 }
