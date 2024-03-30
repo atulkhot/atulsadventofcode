@@ -59,7 +59,7 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultState.cols.get(0).value should be(1)
     resultState.board.size should be(initialSize - 1)
 
-    resultState.entireRowOrColMarked should be(false)
+    resultState.winningBoardElemOpt should be(None)
   }
 
   "Marking an element so a single row" should "is completely marked" in {
@@ -86,7 +86,7 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultState.cols.get(4).value should be(1)
     resultState.board.size should be(initialSize - 1)
 
-    resultState.entireRowOrColMarked should be(true)
+    resultState.winningBoardElemOpt.isDefined should be(true)
   }
 
   "Marking an element so a single column" should "is completely marked" in {
@@ -113,8 +113,8 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     resultState.rows.get(4).value should be(1)
     resultState.board.size should be(initialSize - 1)
 
-    resultState.entireRowOrColMarked should be(true)
-    resultState.winningElem should be (14)
+    resultState.winningBoardElemOpt.isDefined should be(true)
+    resultState.winningBoardElemOpt.value should be (14)
     resultState.winningScore should be(3290)
   }
 
@@ -160,7 +160,7 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
 
     resultState.board.size should be(13)
 
-    resultState.entireRowOrColMarked should be(true)
+    resultState.winningBoardElemOpt.isDefined should be(true)
     resultState.winningScore should be(4512)
   }
 

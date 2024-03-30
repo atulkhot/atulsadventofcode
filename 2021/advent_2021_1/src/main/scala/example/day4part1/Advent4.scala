@@ -8,8 +8,7 @@ import scala.io.Source
 case class Board(board: Map[Int, List[(Int, Int)]],
                  rows: Vector[Int],
                  cols: Vector[Int],
-                 entireRowOrColMarked: Boolean,
-                 winningElem: Int) {
+                 winningBoardElemOpt: Option[Int] = None) {
 
   private def reduceList(key: Int, list: List[(Int, Int)]): Board = {
     val (updatedRow, updatedCol) = list.foldLeft((rows, cols)) {
@@ -21,14 +20,16 @@ case class Board(board: Map[Int, List[(Int, Int)]],
     val allMarkedCount = rows.size
     val allOfARowOrColMarked = updatedRow.contains(allMarkedCount) || updatedCol.contains(allMarkedCount)
     if (allOfARowOrColMarked)
-      copy(board - key, updatedRow, updatedCol, allOfARowOrColMarked, key)
+      copy(board - key, updatedRow, updatedCol, key.some)
     else
-      copy(board - key, updatedRow, updatedCol, allOfARowOrColMarked)
+      copy(board - key, updatedRow, updatedCol)
   }
 
   def modify(elem: Int): Board = board.get(elem).fold(this)(list => reduceList(elem, list))
 
-  def winningScore: Int = board.keys.sum * winningElem
+  def winningScore: Int = winningBoardElemOpt.fold(0)(winningElem => board.keys.sum * winningElem)
+
+  def isItAWinnerBoard: Boolean = winningBoardElemOpt.isDefined
 }
 
 object Board {
@@ -49,7 +50,7 @@ object Board {
     val rows = Vector.fill(nRows)(0)
     val cols = Vector.fill(nCols)(0)
 
-    new Board(board, rows, cols, false, 0)
+    new Board(board, rows, cols)
   }
 
   def markBoardElement(elem: Int): BoardState[Unit] = State.modify(s => s.modify(elem))
@@ -62,13 +63,13 @@ object Board {
 
   private def markElemAndCheckAllBoards(boards: List[Board], elem: Int): List[Board] = {
     val p = makeAnElementOfAllBoards(boards, elem)
-    p.find(_.entireRowOrColMarked).fold(p)(board => List(board))
+    p.find(_.isItAWinnerBoard).fold(p)(board => List(board))
   }
 
   def drawASeriesOfNumbers(boards: List[Board], elementsDrawn: List[Int]): List[Board] =
     elementsDrawn.foldLeft(boards) {
       case (acc, elem) =>
-        val foundWinningBoard = acc.headOption.exists(board => board.entireRowOrColMarked)
+        val foundWinningBoard = acc.headOption.exists(board => board.isItAWinnerBoard)
         if (!foundWinningBoard)
           markElemAndCheckAllBoards(acc, elem)
         else
