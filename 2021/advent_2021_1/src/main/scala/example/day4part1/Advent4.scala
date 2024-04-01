@@ -66,13 +66,13 @@ object Board {
     p.find(_.isItAWinnerBoard).fold(p)(board => List(board))
   }
 
-  def p(acc: List[Board], elem: Int): Option[List[Board]] = { // x.find(_.isItAWinnerBoard)
+  def markElemInBoard(acc: List[Board], elem: Int): Option[List[Board]] = { // x.find(_.isItAWinnerBoard)
     val winningBoardOpt = acc.headOption.find(_.isItAWinnerBoard)
     winningBoardOpt.map(board => List(board)) orElse markElemAndCheckAllBoards(acc, elem).some
   }
 
   def processDrawnSeriesOfNumbers(boards: List[Board], elementsDrawn: List[Int]): Option[Board] =
-    elementsDrawn.foldM(boards)(p).fold(Option.empty[Board])(list => list.headOption)
+    elementsDrawn.foldM(boards)(markElemInBoard).fold(Option.empty[Board])(list => list.headOption)
 }
 
 object Advent4 extends App {
