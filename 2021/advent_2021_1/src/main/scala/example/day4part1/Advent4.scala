@@ -66,15 +66,13 @@ object Board {
     p.find(_.isItAWinnerBoard).fold(p)(board => List(board))
   }
 
-  def drawASeriesOfNumbers(boards: List[Board], elementsDrawn: List[Int]): List[Board] =
-    elementsDrawn.foldLeft(boards) {
-      case (acc, elem) =>
-        val foundWinningBoard = acc.headOption.exists(board => board.isItAWinnerBoard)
-        if (!foundWinningBoard)
-          markElemAndCheckAllBoards(acc, elem)
-        else
-          acc
-    }
+  def p(acc: List[Board], elem: Int): Option[List[Board]] = { // x.find(_.isItAWinnerBoard)
+    val winningBoardOpt = acc.headOption.find(_.isItAWinnerBoard)
+    winningBoardOpt.map(board => List(board)) orElse markElemAndCheckAllBoards(acc, elem).some
+  }
+
+  def processDrawnSeriesOfNumbers(boards: List[Board], elementsDrawn: List[Int]): Option[Board] =
+    elementsDrawn.foldM(boards)(p).fold(Option.empty[Board])(list => list.headOption)
 }
 
 object Advent4 extends App {
@@ -103,17 +101,14 @@ object Advent4 extends App {
     Board(5, 5, boardData)
   }
 
-//  val drawnNumbers = List(7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24, 10, 16, 13, 6, 15, 25, 12, 22, 18, 20, 8, 19, 3, 26, 1)
+  //  val drawnNumbers = List(7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24, 10, 16, 13, 6, 15, 25, 12, 22, 18, 20, 8, 19, 3, 26, 1)
 
   val drawnNumbers = List(46, 79, 77, 45, 57, 34, 44, 13, 32, 88, 86, 82, 91, 97, 89, 1, 48, 31, 18, 10,
     55, 74, 24, 11, 80, 78, 28, 37, 47, 17, 21, 61, 26, 85, 99, 96, 23, 70, 3, 54, 5, 41, 50, 63, 14, 64, 42, 36,
     95, 52, 76, 68, 29, 9, 98, 35, 84, 83, 71, 49, 73, 58, 56, 66, 92, 30, 51, 20, 81, 69, 65, 15, 6, 16, 39, 43,
     67, 7, 59, 40, 60, 4, 90, 72, 22, 0, 93, 94, 38, 53, 87, 27, 12, 2, 25, 19, 8, 62, 33, 75)
 
-  val resultBoard = Board.drawASeriesOfNumbers(listOfBoards, drawnNumbers)
-
-  val winningBoard = resultBoard.get(0)
+  val winningBoard = Board.processDrawnSeriesOfNumbers(listOfBoards, drawnNumbers)
 
   winningBoard.fold(println("No Winning board found"))(winningBoard => println(winningBoard.winningScore))
-
 }
