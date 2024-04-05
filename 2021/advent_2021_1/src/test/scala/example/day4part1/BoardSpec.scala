@@ -78,12 +78,9 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
 
     val resultState: Board = startingState.runS(board).value
 
-    resultState.rows.get(0).value should be(5)
-    resultState.cols.get(0).value should be(1)
-    resultState.cols.get(1).value should be(1)
-    resultState.cols.get(2).value should be(1)
-    resultState.cols.get(3).value should be(1)
-    resultState.cols.get(4).value should be(1)
+    resultState.rows should contain theSameElementsAs Vector(5, 0, 0, 0, 0)
+    resultState.cols should contain only(1)
+    
     resultState.board.size should be(initialSize - 1)
 
     resultState.winningBoardElemOpt.isDefined should be(true)
@@ -105,12 +102,9 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
 
     val resultState: Board = startingState.runS(board).value
 
-    resultState.cols.get(0).value should be(5)
-    resultState.rows.get(0).value should be(1)
-    resultState.rows.get(1).value should be(1)
-    resultState.rows.get(2).value should be(1)
-    resultState.rows.get(3).value should be(1)
-    resultState.rows.get(4).value should be(1)
+    resultState.cols should contain theSameElementsAs Vector(5, 0, 0, 0, 0)
+    resultState.rows should contain only(1)
+
     resultState.board.size should be(initialSize - 1)
 
     resultState.winningBoardElemOpt.isDefined should be(true)
