@@ -147,12 +147,7 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
     val resultState = finalState.runS(board).value
 
     resultState.rows should contain theSameElementsAs Vector(5, 1, 1, 2, 3)
-
-    resultState.cols.get(0).value should be(2)
-    resultState.cols.get(1).value should be(3)
-    resultState.cols.get(2).value should be(2)
-    resultState.cols.get(3).value should be(2)
-    resultState.cols.get(4).value should be(3)
+    resultState.cols should contain theSameElementsAs Vector(2, 3, 2, 2, 3)
 
     resultState.board.size should be(13)
 
