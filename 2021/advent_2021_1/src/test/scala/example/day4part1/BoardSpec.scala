@@ -9,7 +9,7 @@ import org.scalatest.OptionValues.convertOptionToValuable
 
 class BoardSpec extends AnyFlatSpec with should.Matchers {
   def fixture = new {
-    val boardData1 = List(
+    val boardData1: List[Int] = List(
       14, 21, 17, 24, 4,
       10, 16, 15, 9, 19,
       18, 8, 23, 26, 20,
@@ -17,7 +17,7 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
       2, 0, 12, 3, 7
     )
 
-    val boardData2 = List(
+    val boardData2: List[Int] = List(
       14, 21, 13, 24, 4,
       13, 16, 15, 9, 19,
       18, 8, 23, 26, 20,
@@ -25,7 +25,7 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
       2, 0, 12, 3, 4
     )
 
-    val zerothRowAll14 = List(
+    val zerothRowAll14: List[Int] = List(
       14, 14, 14, 14, 14,
       13, 16, 15, 9, 19,
       18, 8, 23, 26, 20,
@@ -33,7 +33,7 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
       2, 0, 12, 3, 4
     )
 
-    val zerothColAll14 = List(
+    val zerothColAll14: List[Int] = List(
       14, 21, 13, 24, 4,
       14, 16, 15, 9, 19,
       14, 8, 23, 26, 20,
@@ -41,7 +41,7 @@ class BoardSpec extends AnyFlatSpec with should.Matchers {
       14, 0, 12, 3, 4
     )
 
-    val listOfBoards = List(
+    val listOfBoards: List[Board] = List(
       List(
         22, 13, 17, 11, 0,
         8, 2, 23, 4, 24,
